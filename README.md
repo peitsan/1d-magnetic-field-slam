@@ -1,14 +1,10 @@
-# Online One-Dimensional Magnetic Field SLAM with Loop-Closure Detection
+# MagVehi: Realtime Online One-Dimensional Magnetic Field SLAM for drift correction
 
-This repository is the official implementation of the methods in the publication:
-
+This repository is an incremental version of the original repository base on the follow research：
 * Manon Kok and Arno Solin (2024). **Online One-Dimensional Magnetic Field SLAM with Loop-Closure Detection**. In *IEEE International Conference on Multisensor Fusion and Integration (MFI)*. [arXiv preprint](https://arxiv.org/abs/2409.01091)
 
 ### Motivation
 
-We present a lightweight magnetic field simultaneous localisation and mapping (SLAM) approach for drift correction in odometry paths, where the interest is purely in the odometry and not in map building. We represent the past magnetic field readings as a one-dimensional trajectory against which the current magnetic field observations are matched. This approach boils down to sequential loop-closure detection and decision-making, based on the current pose state estimate and the magnetic field. We combine this setup with a path estimation framework using an extended Kalman filter and smoother which fuse the odometry increments with the detected loop-closure timings. We demonstrate the practical applicability of the model with several different real-world examples from a handheld iPad moving in indoor scenes.
-
-https://github.com/user-attachments/assets/b77933b3-a214-4bcf-8241-0d638c2b8654
 
 ## Dependencies
 
@@ -21,7 +17,7 @@ to compute the RMSE.
 ### Main file to run
 
 ```
-  runSLAM - Main file to make all results
+  runDemo - Main file to make all results
 ```
 
 ### Core functions (under `src`)
@@ -49,7 +45,7 @@ Data used in the examples are provided in the folder `data`.
 
 ## Running experiment examples
 
-In the `runSLAM.m` file it is possible to choose which of the four data sets to run in the variable `indDataSet` on line 41.
+In the `runDemo.m` file it is possible to choose which of the four data sets to run in the variable `indDataSet` on line 41.
 
 ## License
 

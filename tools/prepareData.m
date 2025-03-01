@@ -41,7 +41,7 @@ data = load(filename);
 %% Extract position and orientation data from files
 % Extract / compute pos and quat data from files
 quat = data.quat;
-pos_gt = [zeros(1,3) ; cumsum(data.dPos)];
+pos_gt = [zeros(1,3) ; cumsum(data.dPos)];  % 为什么这里要计算各行累加？  o：1 2 3 4  cumsum ： 1 3 6 10
     
 % Cut off some additional data in the beginning
 if strcmp(filename,'data/library.mat')
