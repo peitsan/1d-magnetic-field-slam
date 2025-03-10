@@ -7,6 +7,8 @@ function [filename]=collectRosData
     setenv('ROS_MASTER_URI','http://192.168.1.107:11311/');
     setenv('ROS_IP','192.168.1.107')  
     rosinit;   
+    bag = rosbag()
+
 
     persistent imu mag odom tr quatn 
 

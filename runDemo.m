@@ -14,7 +14,8 @@ rng(0,'twister')
 
 % clear, clc, close all
 % 
-% [filename]=collectRosData;
+bagfile=""
+[filename]=collectRosData;
 % Filenames
 % filenames{1} = 'data/20250301-2.mat'; 
 filenames{1}=filename;
@@ -36,7 +37,7 @@ if makeResults
     driftNoiseParams.sh2 = 1E-4;
     driftNoiseParams.sp2 = 1E-4; 
 
-    indDataSet = 1;
+    indDataSet = 1;+   
     rms_drs = [];
     rms_ekfs = [];
     if makeResults
