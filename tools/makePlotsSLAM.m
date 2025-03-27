@@ -43,7 +43,7 @@ function [rms_dr,rms_ekf] = makePlotsSLAM(filename,MF,PF,xs,loop_start,loop_end,
 
 k = length(wm);
 
-%% Plot for square trajectory
+%% 绘制轨迹真值 已知的 通过路径匹配真值数据
 if strcmp(filename,'data/square.mat')
     figure(3); clf;
     subplot(221); cla; hold on

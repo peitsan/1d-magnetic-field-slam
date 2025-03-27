@@ -43,7 +43,7 @@ data = load(filename);
 quat = data.quat;
 pos_gt = [zeros(1,3) ; cumsum(data.dPos)];  % 为什么这里要计算各行累加？  o：1 2 3 4  cumsum ： 1 3 6 10
     
-% Cut off some additional data in the beginning
+% 删除开头的一些无用数据
 if strcmp(filename,'data/library.mat')
     indCutOff = 150;
 else
@@ -64,7 +64,7 @@ t = data.t;
 eul = quat2eul(quat,'ZYX');
 eul = unwrap(eul);
 
-%% Create odometry
+%% Create odometry  创建里程计
 % Drift settings
 bias = driftNoiseParams.bias; 
 sh2 = driftNoiseParams.sh2; 

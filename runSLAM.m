@@ -18,8 +18,8 @@ clear, clc, close all
 filenames = {};
 filenames{1} = 'data/library.mat'; 
 filenames{2} = 'data/square.mat'; 
-filenames{3} = 'data/eight.mat'; 
-filenames{4} = 'data/mall.mat'; 
+% filenames{3} = 'data/eight.mat'; 
+% filenames{4} = 'data/mall.mat'; 
 
 % Settings
 makePlots = 1;

@@ -1,16 +1,11 @@
-function [filename]=collectRosData
-    % 初始化存储变量
-    clear, close all, clc
-    rosshutdown
-
+function [filename] = collectRosData()
+    global exitFlag saveFlag existFlag
+    persistent imu mag odom tr quatn
+    
     % 连接到ROS主节点
-    setenv('ROS_MASTER_URI','http://192.168.1.107:11311/');
-    setenv('ROS_IP','192.168.1.107')  
-    rosinit;   
-    bag = rosbag()
-
-
-    persistent imu mag odom tr quatn 
+    setenv('ROS_MASTER_URI', 'http://192.168.1.110:11311/');
+    setenv('ROS_IP', '192.168.1.110');
+    rosinit;
 
     % 创建订阅者
     imuSub = rossubscriber('/imu/data', @processImuData);
@@ -18,49 +13,47 @@ function [filename]=collectRosData
     timeRefSub = rossubscriber('/imu/time_ref', @processTimeRef);
     odomSub = rossubscriber('/imu2odom_node/imu_odometry', @processOdom);
     quatSub = rossubscriber('/filter/quaternion', @processQuat);
-    
-    % 等待关闭ROS连接中断
+
     % 用于退出循环的标志
     exit_flag = false;
-    % 无限循环监听键盘输入
+    % 提示用户输入指令
+    disp('数据采集中...。请输入指令中断：');
+    disp(' (exit: 中止不保存, save: 录制完成并保存)');
+    % 录制数据的逻辑
     while ~exit_flag
-        % 提示用户输入指令
-        disp('数据采集中...。请输入指令中断：');
-        command = input(' (exit: 中止不保存, save [file]: 录制完成并保存): \n', 's');
-        
-        % 检查用户输入的指令
-        if strcmpi(command, 'exit')
+        % 检查全局变量
+        if exitFlag
             % 中止程序
             disp('接受中止指令，不保存数据。');
-            exit_flag = true; % 设置退出标志
-            
-        elseif strcmpi(command, 'save')
+            exit_flag = true;
+            exitFlag = false; % 重置全局变量
+        elseif saveFlag
             % 录制完成并保存
             disp('接受保存指令，准备保存数据。');
             
             % 保存一份原始数据
-            filename=sprintf('ros-data-%s.mat',datestr(now,'mm-dd-HH-MM'))
-            save(filename, 'imu', 'mag', 'tr', 'odom', 'quatn')
-            fprintf('原始数据已保存为%s。\n',filename);
-
+%             filename = sprintf('ros-data-%s.mat', datestr(now, 'mm-dd-HH-MM'));
+%             save(filename, 'imu', 'mag', 'tr', 'odom', 'quatn');
+%             fprintf('原始数据已保存为%s。\n', filename);
             % 对原始数据进行抽样对齐
             [odom_time, dPos, dPosSmooth, initPos, quat, t, tm, m, LL] = alignROStime(imu, mag, odom, quatn);
-            filename= sprintf('square-mag-%s.mat',datestr(now,'mm-dd-HH-MM'))
+            filename = sprintf('mag-%s.mat', datestr(now, 'mm-dd-HH-MM'));
             save(filename, 'odom_time', 'dPos', 'dPosSmooth', 'initPos', 'quat', 't', 'tm', 'm', 'LL');
             fprintf('数据已对齐并存储为%s。\n', filename);
+            assignin('base', 'filename', filename);
             toClear = setdiff(who, 'filename');
             clear(toClear{:});
             
-            exit_flag = true; % 设置退出标志
-            
-        else
-            % 其他输入，提示用户重新输入
-            disp('无效指令，请重新输入。');
+            exit_flag = true;
+            existFlag = true;
+            saveFlag = false; % 重置全局变量
         end
+        % 短暂暂停以避免高CPU使用率
+        pause(0.1);
     end
 
     % 程序结束
-    disp('程序已退出。');
+    disp('传感器录制已退出。');
     rosshutdown;
     
 

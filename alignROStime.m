@@ -6,9 +6,12 @@ function [odom_time, dPos, dPosSmooth, initPos, quat, t, tm, m, LL] = alignROSTi
     [odom_time_sorted, sort_idx] = sort(odom_time);
     odom_pos_sorted = vertcat(odom(sort_idx).Position);
 
-    odom_time=odom_time_sorted
-    dPos= [odom_pos_sorted(2:end).X;odom_pos_sorted(2:end).Y;odom_pos_sorted(2:end).Z]';
-    
+    odom_time = odom_time_sorted;
+    % 计算里程计位置数据的变化量
+    dPos = [odom_pos_sorted.X; odom_pos_sorted.Y; odom_pos_sorted.Z]';
+%     dPos = [0,0,0]+diff(dPos);
+    dPos = diff(dPos);
+
     % 计算相对时间t（起点为0.0002秒）
     t_bias = odom_time_sorted(1) - 0.0002;  % 计算初始偏移量
     t = odom_time_sorted - t_bias;          % 确保第一个时间为0.0002秒
@@ -30,8 +33,9 @@ function [odom_time, dPos, dPosSmooth, initPos, quat, t, tm, m, LL] = alignROSTi
     % 找到最近邻索引
     idx_mag = dsearchn(mag_time_valid, theoretical_times');
     mags = vertcat(mag_valid(idx_mag).Mag);
-    m = [mags.X; mags.Y; mags.Z;]';
-    
+    m = [mags.X; mags.Y; mags.Z]';  
+    m = 100 * m; %1 Gaussian = 100μT
+
     % 处理quat数据（与mag逻辑相同）
     quat_time = [quatn.Time]';
     [quat_time_sorted, quat_sort_idx] = sort(quat_time);
